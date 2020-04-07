@@ -1030,7 +1030,7 @@ void hpSettingsChanged() {
   hppower.toLowerCase();
   hpmode.toLowerCase();
 
-  if (hpmode == "fan") {
+  /*if (hpmode == "fan") {
     rootInfo["mode"] = "fan_only";
   }
   else if (hpmode == "auto") {
@@ -1038,11 +1038,12 @@ void hpSettingsChanged() {
   }
   else {
     rootInfo["mode"] = hpmode.c_str();
-  }
-
-  if (hppower == "off") {
+  }*/
+  
+  rootInfo["mode"] = hpmode.c_str();
+  /*if (hppower == "off") {
     rootInfo["mode"] = "off";
-  }
+  }*/
 
   String mqttOutput;
   serializeJson(rootInfo, mqttOutput);
@@ -1061,12 +1062,13 @@ String hpGetMode() {
   hppower.toLowerCase();
   hpmode.toLowerCase();
   String result;
-  if (hppower == "off") result = "off";
+  /*if (hppower == "off") result = "off";
   else {
     if (hpmode == "fan") result = "fan_only";
     else if (hpmode == "auto") result = "heat_cool";
     else result = hpmode.c_str();
-  }
+  }*/
+  result = hpmode.c_str();
   return result;
 }
 
@@ -1199,9 +1201,12 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     root["mode"] = message;
     String modeUpper = message;
     modeUpper.toUpperCase();
-    if (modeUpper == "HEAT_COOL") {
+    /*if (modeUpper == "HEAT_COOL") {
       modeUpper = "AUTO";
       hpSendDummy("mode", "heat_cool", "action", "idle");
+    }*/
+    if (modeUpper == "AUTO") {
+      hpSendDummy("mode", "auto", "action", "idle");
     }
     if (modeUpper == "HEAT") {
       hpSendDummy("mode", "heat", "action", "heating");
@@ -1213,9 +1218,12 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
       hpSendDummy("mode", "dry", "action", "drying");
 
     }
-    if (modeUpper == "FAN_ONLY") {
+    /*if (modeUpper == "FAN_ONLY") {
       modeUpper = "FAN";
       hpSendDummy("action", "fan_only", "mode", "fan_only");
+    }*/
+    if (modeUpper == "FAN") {
+      hpSendDummy("action", "fan", "mode", "fan");
     }
     if (modeUpper == "OFF") {
       hp.setPowerSetting("OFF");
@@ -1289,13 +1297,15 @@ void haConfig() {
   haConfig["unique_id"]                     = getId();
 
   JsonArray haConfigModes = haConfig.createNestedArray("modes");
-  haConfigModes.add("heat_cool"); //native AUTO mode
+  //haConfigModes.add("heat_cool"); //native AUTO mode
+  haConfigModes.add("auto");
   haConfigModes.add("cool");
   haConfigModes.add("dry");
   if (supportHeatMode) {
     haConfigModes.add("heat");
   }
-  haConfigModes.add("fan_only");  //native FAN mode
+  //haConfigModes.add("fan_only");  //native FAN mode
+  haConfigModes.add("fan");
   haConfigModes.add("off");
 
 
