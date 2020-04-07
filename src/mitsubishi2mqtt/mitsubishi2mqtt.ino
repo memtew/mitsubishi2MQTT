@@ -1095,7 +1095,7 @@ void hpStatusChanged(heatpumpStatus currentStatus) {
   // send room temp, operating info and all information
   heatpumpSettings currentSettings = hp.getSettings();
 
-  const size_t bufferSizeInfo = JSON_OBJECT_SIZE(7);
+  const size_t bufferSizeInfo = JSON_OBJECT_SIZE(9);
   StaticJsonDocument<bufferSizeInfo> rootInfo;
 
   rootInfo["roomTemperature"] = getTemperature(currentStatus.roomTemperature, useFahrenheit);
@@ -1106,7 +1106,9 @@ void hpStatusChanged(heatpumpStatus currentStatus) {
   rootInfo["wideVane"]        = currentSettings.wideVane;
   rootInfo["action"]          = hpGetAction();
   rootInfo["mode"]            = hpGetMode();
-  rootInfo["power"]           = currentSettings.power;
+  String hppower = String(currentSettings.power);
+  hppower.toLowerCase();
+  rootInfo["power"]           = hppower;
   String mqttOutput;
   serializeJson(rootInfo, mqttOutput);
 
@@ -1142,10 +1144,12 @@ void hpPacketDebug(byte* packet, unsigned int length, char* packetDirection) {
 void hpSendDummy(String name, String value, String name2, String value2) {
 
   //For sending dummy state packet
-  const size_t bufferSizeInfo = JSON_OBJECT_SIZE(12);
+  const size_t bufferSizeInfo = JSON_OBJECT_SIZE(14);
   StaticJsonDocument<bufferSizeInfo> rootInfo;
   heatpumpStatus currentStatus = hp.getStatus();
   heatpumpSettings currentSettings = hp.getSettings();
+  String hppower = String(currentSettings.power);
+  hppower.toLowerCase();
   rootInfo["roomTemperature"] = getTemperature(currentStatus.roomTemperature, useFahrenheit);
   rootInfo["temperature"]     = getTemperature(currentSettings.temperature, useFahrenheit);
   rootInfo["fan"]             = currentSettings.fan;
@@ -1153,7 +1157,7 @@ void hpSendDummy(String name, String value, String name2, String value2) {
   rootInfo["wideVane"]        = currentSettings.wideVane;
   rootInfo["action"]          = hpGetAction();
   rootInfo["mode"]            = hpGetMode();
-  rootInfo["power"]           = currentSettings.power;
+  rootInfo["power"]           = hppower;
   rootInfo[name] = value;
   if (name2 != "") rootInfo[name2] = value2;
   //Send dummy MQTT state packet before unit update
