@@ -1383,6 +1383,7 @@ void mqttConnect() {
       mqtt_client.subscribe(ha_fan_set_topic.c_str());
       mqtt_client.subscribe(ha_temp_set_topic.c_str());
       mqtt_client.subscribe(ha_vane_set_topic.c_str());
+      mqtt_client.subscribe(ha_wideVane_set_topic.c_str());
       haConfig();
     }
   }
