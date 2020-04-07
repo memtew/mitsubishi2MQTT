@@ -1227,8 +1227,8 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     }
     if (modeUpper == "OFF") {
       hp.setPowerSetting("OFF");
-      //hpSendDummy("action", "off", "mode", "off");
-      hpSendDummy("action", "off");
+      hpSendDummy("action", "off", "mode", "off");
+      //hpSendDummy("action", "off");
     } else {
       //hpSendDummy("action","on");
       hp.setPowerSetting("ON");
