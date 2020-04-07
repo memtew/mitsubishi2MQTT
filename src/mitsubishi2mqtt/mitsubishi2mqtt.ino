@@ -1108,9 +1108,7 @@ void hpStatusChanged(heatpumpStatus currentStatus) {
   rootInfo["wideVane"]        = currentSettings.wideVane;
   rootInfo["action"]          = hpGetAction();
   rootInfo["mode"]            = hpGetMode();
-  String hppower = String(currentSettings.power);
-  hppower.toLowerCase();
-  rootInfo["power"]           = hppower;
+  rootInfo["power"]           = currentSettings.power;
   String mqttOutput;
   serializeJson(rootInfo, mqttOutput);
 
@@ -1150,8 +1148,6 @@ void hpSendDummy(String name, String value, String name2, String value2) {
   StaticJsonDocument<bufferSizeInfo> rootInfo;
   heatpumpStatus currentStatus = hp.getStatus();
   heatpumpSettings currentSettings = hp.getSettings();
-  String hppower = String(currentSettings.power);
-  hppower.toLowerCase();
   rootInfo["roomTemperature"] = getTemperature(currentStatus.roomTemperature, useFahrenheit);
   rootInfo["temperature"]     = getTemperature(currentSettings.temperature, useFahrenheit);
   rootInfo["fan"]             = currentSettings.fan;
@@ -1159,7 +1155,7 @@ void hpSendDummy(String name, String value, String name2, String value2) {
   rootInfo["wideVane"]        = currentSettings.wideVane;
   rootInfo["action"]          = hpGetAction();
   rootInfo["mode"]            = hpGetMode();
-  rootInfo["power"]           = hppower;
+  rootInfo["power"]           = currentSettings.power;
   rootInfo[name] = value;
   if (name2 != "") rootInfo[name2] = value2;
   //Send dummy MQTT state packet before unit update
