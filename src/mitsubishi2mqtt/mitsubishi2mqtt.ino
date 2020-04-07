@@ -1150,8 +1150,10 @@ void hpSendDummy(String name, String value, String name2, String value2) {
   rootInfo["temperature"]     = getTemperature(currentSettings.temperature, useFahrenheit);
   rootInfo["fan"]             = currentSettings.fan;
   rootInfo["vane"]            = currentSettings.vane;
+  rootInfo["wideVane"]        = currentSettings.wideVane;
   rootInfo["action"]          = hpGetAction();
   rootInfo["mode"]            = hpGetMode();
+  rootInfo["power"]           = currentSettings.power;
   rootInfo[name] = value;
   if (name2 != "") rootInfo[name2] = value2;
   //Send dummy MQTT state packet before unit update
@@ -1179,6 +1181,10 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     String modeUpper = message;
     modeUpper.toUpperCase();
     if (modeUpper == "OFF") {
+      hp.setPowerSetting(modeUpper.c_str());
+      hp.update();
+    }
+    else if (modeUpper == "ON") {
       hp.setPowerSetting(modeUpper.c_str());
       hp.update();
     }
@@ -1240,6 +1246,14 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     root["vane"] = message;
     hpSendDummy("vane", message, "", "");
     hp.setVaneSetting(message);
+    hp.update();
+  }
+  else if (strcmp(topic, ha_wideVane_set_topic.c_str()) == 0) {
+    const size_t bufferSize = JSON_OBJECT_SIZE(2);
+    StaticJsonDocument<bufferSize> root;
+    root["wideVane"] = message;
+    hpSendDummy("wideVane", message, "", "");
+    hp.setWideVaneSetting(message);
     hp.update();
   }
   else if (strcmp(topic, ha_remote_temp_set_topic.c_str()) == 0) {
