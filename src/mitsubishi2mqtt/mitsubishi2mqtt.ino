@@ -1227,7 +1227,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
     }
     if (modeUpper == "OFF") {
       hp.setPowerSetting("OFF");
-      hpSendDummy("action", "off", "mode", "off");
+      hpSendDummy("action", "off"/*, "mode", "off"*/);
     } else {
       //hpSendDummy("action","on");
       hp.setPowerSetting("ON");
@@ -1363,9 +1363,9 @@ void haConfig() {
 
   String mqttOutput;
   serializeJson(haConfig, mqttOutput);
-  mqtt_client.beginPublish(ha_config_topic.c_str(), mqttOutput.length(), true);
-  mqtt_client.print(mqttOutput);
-  mqtt_client.endPublish();
+  //mqtt_client.beginPublish(ha_config_topic.c_str(), mqttOutput.length(), true);
+  //mqtt_client.print(mqttOutput);
+  //mqtt_client.endPublish();
 }
 
 void mqttConnect() {
