@@ -1103,8 +1103,10 @@ void hpStatusChanged(heatpumpStatus currentStatus) {
   //rootInfo["operating"]       = currentStatus.operating;
   rootInfo["fan"]             = currentSettings.fan;
   rootInfo["vane"]            = currentSettings.vane;
+  rootInfo["wideVane"]        = currentSettings.wideVane;
   rootInfo["action"]          = hpGetAction();
   rootInfo["mode"]            = hpGetMode();
+  rootInfo["power"]           = currentSettings.power;
   String mqttOutput;
   serializeJson(rootInfo, mqttOutput);
 
